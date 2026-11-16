@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>NSM: plac zabaw</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>NSM: plac zabaw</h1>
+  <p class="lead">Jeden model językowy opisuje słowo za pomocą 65 prymitywów semantycznych (eksplikacja NSM). Inne modele próbują odgadnąć to słowo. Sędzia ocenia odpowiedzi, a na koniec wybrany model ocenia samą eksplikację w 22 wymiarach. Metoda i polecenia są takie same jak w badaniu.</p>
+</header>
+
+<main>
+<section class="card" id="s-key">
+  <h2><span class="num">0</span> Klucz OpenRouter</h2>
+  <p>Wklej swój klucz z <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>. Klucz trafia wyłącznie do openrouter.ai; nie jest nigdzie zapisywany poza tą kartą przeglądarki. Opłaty pobiera OpenRouter z Twojego konta.</p>
+  <div class="row">
+    <input id="key" type="password" placeholder="sk-or-v1-…" autocomplete="off" spellcheck="false">
+    <label class="inline"><input id="remember" type="checkbox"> pamiętaj w tej karcie</label>
+  </div>
+</section>
+
+<section class="card" id="s-term">
+  <h2><span class="num">1</span> Słowo</h2>
+  <div class="row"><select id="term-pick"></select></div>
+  <div class="grid2">
+    <label>Słowo lub wyrażenie<input id="term" type="text"></label>
+    <label>Przykład użycia (opcjonalnie)<input id="example" type="text"></label>
+  </div>
+  <label>Definicja (koder ją widzi, modele odgadujące nie)<textarea id="definition" rows="2"></textarea></label>
+</section>
+
+<section class="card" id="s-encode">
+  <h2><span class="num">2</span> Eksplikacja</h2>
+  <p>Model piszący dostaje słowo, definicję i listę 65 prymitywów. Nie może użyć samego słowa ani jego rdzenia; jeśli to zrobi, zostanie poproszony o nową wersję (najwyżej 3 razy).</p>
+  <div class="row">
+    <input id="coder" class="model" list="model-list" placeholder="identyfikator modelu, np. anthropic/claude-fable-5.1">
+    <button id="btn-encode">Napisz eksplikację</button>
+  </div>
+  <p class="model-info" data-for="coder"></p>
+  <p id="encode-status" class="status"></p>
+  <label>Eksplikacja (możesz ją też napisać lub poprawić samodzielnie)<textarea id="explication" rows="9" spellcheck="false"></textarea></label>
+  <div id="highlight" class="highlight"></div>
+  <p id="metrics" class="small"></p>
+  <p class="legend small"><span class="w-prime">prymityw</span> <span class="w-func">wyraz funkcyjny</span> <span class="w-other">spoza listy</span> <span class="w-leak">słowo-hasło</span></p>
+</section>
+
+<section class="card" id="s-decode">
+  <h2><span class="num">3</span> Odgadywanie</h2>
+  <p>Modele odgadujące widzą tylko eksplikację. <b>Wariant zamknięty</b>: wybierają jedno z listy 31 haseł (losowo: 3%). <b>Wariant otwarty</b>: podają własne propozycje, które ocenia sędzia (1 = to samo znaczenie, 0,5 = to samo pole znaczeniowe, 0 = inne).</p>
+  <div id="decoders"></div>
+  <div class="row">
+    <button id="btn-add-decoder" class="secondary">+ dodaj model</button>
+    <label class="inline"><input id="v-closed" type="checkbox" checked> zamknięty</label>
+    <label class="inline"><input id="v-open" type="checkbox" checked> otwarty</label>
+  </div>
+  <div class="row">
+    <input id="judge" class="model" list="model-list" placeholder="sędzia wariantu otwartego, np. anthropic/claude-haiku-5.5">
+    <button id="btn-decode">Odgadnij</button>
+  </div>
+  <p class="model-info" data-for="judge"></p>
+  <p id="decode-status" class="status"></p>
+  <div id="decode-results"></div>
+</section>
+
+<section class="card" id="s-eval">
+  <h2><span class="num">4</span> Ocena w 22 wymiarach</h2>
+  <p>Model oceniający ocenia eksplikację w 22 wymiarach z pracy Naskręckiego i Szczyszka (2025).</p>
+  <div class="row">
+    <input id="evaluator" class="model" list="model-list" placeholder="model oceniający, np. google/gemini-4-argon">
+    <button id="btn-eval">Oceń eksplikację</button>
+  </div>
+  <p class="model-info" data-for="evaluator"></p>
+  <p id="eval-status" class="status"></p>
+  <div id="eval-results"></div>
+</section>
+
+<section class="card" id="s-settings">
+  <h2>Ustawienia</h2>
+  <div class="grid3">
+    <label>Reasoning effort
+      <select id="effort"><option value="low">low (jak w badaniu)</option><option value="none">wyłączony</option><option value="medium">medium</option><option value="high">high</option><option value="">domyślny dostawcy</option></select>
+    </label>
+    <label>Temperatura<input id="temperature" type="number" min="0" max="2" step="0.1" value="0"></label>
+    <label>Limit tokenów odpowiedzi<input id="max-tokens" type="number" min="500" max="64000" step="500" value="16000"></label>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>Wydano w tej karcie: <b id="cost">$0.0000</b> · wywołań: <span id="calls">0</span> <span id="version" class="small"></span></p>
+</footer>
+
+<datalist id="model-list"></datalist>
+<script src="nsm.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
