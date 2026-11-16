@@ -66,7 +66,7 @@
   async function post(body) {
     const res = await fetch(API + "/chat/completions", {
       method: "POST",
-      headers: { "Authorization": "Bearer " + key(), "Content-Type": "application/json", "X-Title": "NSM plac zabaw" },
+      headers: { "Authorization": "Bearer " + key(), "Content-Type": "application/json", "X-Title": "Pracownia NSM" },
       body: JSON.stringify(body),
     });
     let j = null;
